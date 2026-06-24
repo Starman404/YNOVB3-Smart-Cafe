@@ -1,9 +1,13 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'io.ionic.starter',
   appName: 'restaurant-app',
-  webDir: 'www'
+  webDir: 'www',
+  server: {
+    hostname: 'app.luxecafe.fr',
+    androidScheme: 'https',
+  },
 };
 
 export default config;

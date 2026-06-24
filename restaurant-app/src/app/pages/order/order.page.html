@@ -1,6 +1,30 @@
 <ion-header>
   <ion-toolbar><ion-title>Ma commande</ion-title></ion-toolbar>
 </ion-header>
+
 <ion-content class="ion-padding">
-  <p>Commande — statut temps réel + paiement (étapes 5 et 6)</p>
+
+  <!-- Your order items would go here -->
+  <p>Récapitulatif de commande...</p>
+
+  <!-- Payment feedback -->
+  <div *ngIf="paymentStatus === 'completed'" class="status success">
+    Paiement confirmé — merci !
+  </div>
+  <div *ngIf="paymentStatus === 'cancelled'" class="status warning">
+    Paiement annulé.
+  </div>
+  <div *ngIf="paymentStatus === 'failed'" class="status error">
+    Le paiement a échoué. Veuillez réessayer.
+  </div>
+
+  <!-- Pay button -->
+  <ion-button
+    expand="block"
+    [disabled]="paying || paymentStatus === 'completed'"
+    (click)="onPay()">
+    <ion-spinner *ngIf="paying" name="crescent" slot="start"></ion-spinner>
+    {{ paying ? 'Traitement…' : 'Payer ' + (totalCents / 100 | number:'1.2-2') + ' €' }}
+  </ion-button>
+
 </ion-content>

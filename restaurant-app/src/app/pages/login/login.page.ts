@@ -1,12 +1,17 @@
 import { Component } from '@angular/core';
-import { IonContent } from '@ionic/angular/standalone';
+import { IonContent, IonButton } from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   standalone: true,
-  imports: [IonContent],
+  imports: [IonContent, IonButton],
 })
 export class LoginPage {
-  // Étape 3 : authentification
+  constructor(private router: Router) {}
+
+  goToTabs() {
+    this.router.navigateByUrl('/tabs');
+  }
 }
