@@ -1,3 +1,29 @@
-<ion-content class="ion-padding">
-  <p>Landing — détection de table (étape 2)</p>
+<ion-content class="ion-padding landing">
+  <div class="landing-wrap">
+
+    <h1>Bienvenue</h1>
+
+    <div class="block" *ngIf="!table">
+      <p>Numéro de table</p>
+      <ion-input
+        type="number"
+        inputmode="numeric"
+        placeholder="ex. 12"
+        [(ngModel)]="tableNumberInput">
+      </ion-input>
+
+      <ion-button expand="block" (click)="confirmTable()" [disabled]="checking">
+        {{ checking ? 'Vérification…' : 'Valider' }}
+      </ion-button>
+
+      <p class="error" *ngIf="error">{{ error }}</p>
+    </div>
+
+    <div class="block" *ngIf="table">
+      <p>Table {{ table.table_number }} — {{ table.table_label }}</p>
+      <ion-button expand="block" (click)="goNext()">Continuer</ion-button>
+      <button class="link" (click)="changeTable()">Ce n'est pas ma table</button>
+    </div>
+
+  </div>
 </ion-content>

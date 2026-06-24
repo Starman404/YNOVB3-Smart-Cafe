@@ -1,0 +1,25 @@
+.landing-wrap {
+  max-width: 320px;
+  margin: 0 auto;
+  padding-top: 80px;
+  text-align: center;
+}
+
+.block {
+  margin-top: 24px;
+}
+
+.error {
+  color: var(--ion-color-danger);
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+
+.link {
+  background: none;
+  border: none;
+  color: var(--ion-color-medium);
+  text-decoration: underline;
+  font-size: 0.85rem;
+  margin-top: 12px;
+}
