@@ -1,6 +1,7 @@
 import { Sidebar } from '@/components/shared/Sidebar'
 import { MobileNav } from '@/components/shared/MobileNav'
 import { QueryProvider } from '@/components/shared/QueryProvider'
+import { Toaster } from '@/components/ui/sonner'
 
 export default function DashboardLayout({
   children,
@@ -27,6 +28,8 @@ export default function DashboardLayout({
         {/* Nav mobile (bottom) */}
         <MobileNav />
       </div>
+
+      <Toaster richColors position="top-right" />
     </QueryProvider>
   )
 }
