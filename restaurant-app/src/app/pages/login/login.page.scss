@@ -1,0 +1,64 @@
+.lux-login {
+  --background: radial-gradient(ellipse at top, var(--lux-night-soft) 0%, var(--lux-night) 70%);
+}
+
+.login-wrap {
+  max-width: 360px;
+  margin: 0 auto;
+  padding: 80px 28px 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-wrap h1 {
+  text-align: center;
+  font-size: 1.6rem;
+  color: var(--lux-ivory);
+  margin: 0;
+}
+
+.lux-divider {
+  width: 100px;
+  margin: 22px auto 28px;
+}
+
+.field {
+  --background: var(--lux-night-soft);
+  --color: var(--lux-ivory);
+  --border-color: var(--lux-sage);
+  border: 1px solid var(--lux-sage);
+  border-radius: 2px;
+  margin-bottom: 14px;
+}
+
+.error {
+  color: var(--lux-bordeaux);
+  font-size: 0.82rem;
+  text-align: center;
+  margin: 4px 0 12px;
+}
+
+.cta-gold {
+  --background: var(--lux-gold);
+  --color: var(--lux-night);
+  --border-radius: 2px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.switch-mode {
+  background: none;
+  border: none;
+  color: var(--lux-ivory-dim);
+  font-size: 0.84rem;
+  text-decoration: underline;
+  margin-top: 22px;
+}
+
+.skip-link {
+  background: none;
+  border: none;
+  color: var(--lux-gold);
+  font-size: 0.84rem;
+  margin-top: 14px;
+}
