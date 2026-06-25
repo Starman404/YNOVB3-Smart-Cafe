@@ -1,6 +1,60 @@
-<ion-header>
-  <ion-toolbar><ion-title>Menu</ion-title></ion-toolbar>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="lux-toolbar">
+    <ion-title>Le Menu</ion-title>
+  </ion-toolbar>
 </ion-header>
-<ion-content class="ion-padding">
-  <p>Menu — catégories et plats (étape 4)</p>
+
+<ion-content class="lux-menu">
+
+  <p class="loading-msg" *ngIf="loading">Chargement du menu…</p>
+
+  <ng-container *ngIf="!loading">
+
+    <div class="category-rail" *ngIf="categories.length">
+      <button
+        *ngFor="let cat of categories"
+        class="rail-chip"
+        (click)="scrollTo(cat.category_id)">
+        {{ cat.category_name }}
+      </button>
+    </div>
+
+    <p class="empty-menu" *ngIf="!categories.length">
+      Le menu n'est pas encore disponible. Revenez bientôt.
+    </p>
+
+    <div *ngFor="let cat of categories" [id]="'cat-' + cat.category_id" class="category-block">
+      <div class="category-heading">
+        <span class="lux-divider-short"></span>
+        <h2>{{ cat.category_name }}</h2>
+      </div>
+
+      <div class="dish" *ngFor="let item of itemsByCategory[cat.category_id]">
+        <ion-thumbnail *ngIf="item.menu_image" class="dish-thumb">
+          <img [src]="item.menu_image" [alt]="item.menu_name" />
+        </ion-thumbnail>
+        <div class="dish-info">
+          <h3 class="dish-name">{{ item.menu_name }}</h3>
+          <p class="dish-desc">{{ item.menu_description }}</p>
+          <div class="dish-footer">
+            <span class="dish-price">{{ item.price | number:'1.2-2' }} €</span>
+            <button class="add-btn" (click)="addToCart(item)">Ajouter</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="empty-cat" *ngIf="!itemsByCategory[cat.category_id]?.length">
+        Cette sélection arrive prochainement.
+      </p>
+    </div>
+
+    <div class="spacer"></div>
+  </ng-container>
+
 </ion-content>
+
+<div class="cart-bar" *ngIf="cartCount > 0" (click)="goToOrder()">
+  <span class="cart-count">{{ cartCount }}</span>
+  <span class="cart-label">Voir ma commande</span>
+  <span class="cart-total">{{ cartTotal | number:'1.2-2' }} €</span>
+</div>
