@@ -1,0 +1,156 @@
+.lux-toolbar {
+  --background: var(--lux-night);
+  --color: var(--lux-ivory);
+  text-align: center;
+}
+
+.empty-state {
+  text-align: center;
+  padding-top: 80px;
+  color: var(--lux-ivory-dim);
+}
+
+.hint {
+  font-size: 0.85rem;
+}
+
+.section {
+  padding: 20px 20px 8px;
+}
+
+.section-title {
+  font-family: var(--lux-font-display);
+  font-size: 1rem;
+  color: var(--lux-gold);
+  margin: 0 0 12px;
+}
+
+.line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(63, 82, 71, 0.4);
+  gap: 12px;
+}
+
+.line-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.line-info .name {
+  color: var(--lux-ivory);
+  font-size: 0.92rem;
+}
+
+.line-info .price, .line .price {
+  font-family: var(--lux-font-mono);
+  color: var(--lux-gold);
+  font-size: 0.85rem;
+}
+
+.line.total {
+  border-bottom: none;
+  font-weight: 600;
+  font-size: 1.02rem;
+}
+
+.qty-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--lux-sage);
+  border-radius: 20px;
+  padding: 2px 10px;
+  flex-shrink: 0;
+}
+
+.qty-control button {
+  background: none;
+  border: none;
+  color: var(--lux-ivory);
+  font-size: 1rem;
+  width: 20px;
+}
+
+.qty {
+  font-family: var(--lux-font-mono);
+  font-size: 0.85rem;
+  color: var(--lux-ivory);
+}
+
+.status-badge {
+  font-family: var(--lux-font-mono);
+  font-size: 0.72rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--lux-sage);
+  color: var(--lux-ivory-dim);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.status-badge[data-status="ready"],
+.status-badge[data-status="served"] {
+  border-color: var(--lux-gold);
+  color: var(--lux-gold);
+}
+
+.status-badge[data-status="cancelled"] {
+  border-color: var(--lux-bordeaux);
+  color: var(--lux-bordeaux);
+}
+
+.lux-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--lux-gold) 50%, transparent);
+  opacity: 0.5;
+  margin: 14px 0;
+}
+
+.cta-gold {
+  --background: var(--lux-gold);
+  --color: var(--lux-night);
+  --border-radius: 2px;
+  font-weight: 600;
+  margin-top: 14px;
+}
+
+.error {
+  color: var(--lux-bordeaux);
+  font-size: 0.82rem;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.wait-msg {
+  text-align: center;
+  color: var(--lux-ivory-dim);
+  font-size: 0.82rem;
+  margin-top: 12px;
+}
+
+.paid-msg {
+  text-align: center;
+  color: var(--lux-gold);
+  font-size: 0.9rem;
+  margin-top: 14px;
+}
+
+.new-order-link {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: none;
+  border: none;
+  color: var(--lux-ivory-dim);
+  font-size: 0.85rem;
+  text-decoration: underline;
+  margin-top: 16px;
+}
+
+.payment-section {
+  padding-bottom: 40px;
+}

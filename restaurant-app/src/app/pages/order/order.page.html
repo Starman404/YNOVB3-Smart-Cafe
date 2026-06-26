@@ -1,30 +1,90 @@
-<ion-header>
-  <ion-toolbar><ion-title>Ma commande</ion-title></ion-toolbar>
+<ion-header class="ion-no-border">
+  <ion-toolbar class="lux-toolbar">
+    <ion-title>Ma commande</ion-title>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content class="lux-order">
 
-  <!-- Your order items would go here -->
-  <p>Récapitulatif de commande...</p>
+  <p class="empty-state" *ngIf="cartLines.length === 0 && orderedItems.length === 0">
+    Votre panier est vide.<br>
+    <span class="hint">Ajoutez des plats depuis l'onglet Menu.</span>
+  </p>
 
-  <!-- Payment feedback -->
-  <div *ngIf="paymentStatus === 'completed'" class="status success">
-    Paiement confirmé — merci !
-  </div>
-  <div *ngIf="paymentStatus === 'cancelled'" class="status warning">
-    Paiement annulé.
-  </div>
-  <div *ngIf="paymentStatus === 'failed'" class="status error">
-    Le paiement a échoué. Veuillez réessayer.
+  <div class="section" *ngIf="orderedItems.length > 0">
+    <h2 class="section-title">Déjà commandé</h2>
+
+    <div class="line ordered" *ngFor="let it of orderedItems">
+      <div class="line-info">
+        <span class="name">{{ it.quantity }} × {{ it.menu_name }}</span>
+        <span class="price">{{ (it.unit_price * it.quantity) | number:'1.2-2' }} €</span>
+      </div>
+      <span class="status-badge" [attr.data-status]="it.item_status">
+        {{ statusLabel(it.item_status) }}
+      </span>
+    </div>
   </div>
 
-  <!-- Pay button -->
-  <ion-button
-    expand="block"
-    [disabled]="paying || paymentStatus === 'completed'"
-    (click)="onPay()">
-    <ion-spinner *ngIf="paying" name="crescent" slot="start"></ion-spinner>
-    {{ paying ? 'Traitement…' : 'Payer ' + (totalCents / 100 | number:'1.2-2') + ' €' }}
-  </ion-button>
+  <div class="section" *ngIf="cartLines.length > 0">
+    <h2 class="section-title">Nouveaux articles</h2>
+
+    <div class="line" *ngFor="let line of cartLines">
+      <div class="line-info">
+        <span class="name">{{ line.menu_name }}</span>
+        <span class="price">{{ (line.unit_price * line.quantity) | number:'1.2-2' }} €</span>
+      </div>
+      <div class="qty-control">
+        <button (click)="decrement(line)">–</button>
+        <span class="qty">{{ line.quantity }}</span>
+        <button (click)="increment(line)">+</button>
+      </div>
+    </div>
+
+    <div class="lux-divider"></div>
+
+    <div class="line total">
+      <span>Total des nouveaux articles</span>
+      <span class="price">{{ cartTotal | number:'1.2-2' }} €</span>
+    </div>
+
+    <p class="error" *ngIf="error">{{ error }}</p>
+
+    <ion-button expand="block" class="cta-gold" [disabled]="sending" (click)="sendOrder()">
+      <ion-spinner *ngIf="sending" name="crescent" slot="start"></ion-spinner>
+      {{ sending ? 'Envoi en cours…' : 'Passer commande' }}
+    </ion-button>
+  </div>
+
+  <div class="section payment-section" *ngIf="activeOrder">
+    <div class="lux-divider"></div>
+    <div class="line total">
+      <span>Total de la commande</span>
+      <span class="price">{{ activeOrder.total_amount | number:'1.2-2' }} €</span>
+    </div>
+
+    <p class="error" *ngIf="error && !sending">{{ error }}</p>
+
+    <ion-button
+      expand="block"
+      class="cta-gold"
+      *ngIf="canPay"
+      [disabled]="paying"
+      (click)="pay()">
+      <ion-spinner *ngIf="paying" name="crescent" slot="start"></ion-spinner>
+      {{ paying ? 'Traitement…' : 'Payer ' + (activeOrder.total_amount | number:'1.2-2') + ' €' }}
+    </ion-button>
+
+    <p class="wait-msg" *ngIf="!canPay && activeOrder.payment_status !== 'paid'">
+      Le paiement sera disponible une fois tous les plats servis.
+    </p>
+
+    <p class="paid-msg" *ngIf="activeOrder.payment_status === 'paid'">
+      Paiement confirmé — merci !
+    </p>
+
+    <button class="new-order-link" *ngIf="activeOrder.payment_status === 'paid'" (click)="startNewOrder()">
+      Commander à nouveau
+    </button>
+  </div>
 
 </ion-content>
