@@ -1,4 +1,4 @@
-export type OrderStatus =
+export type ItemStatus =
   | 'pending'
   | 'confirmed'
   | 'preparing'
@@ -23,7 +23,6 @@ export interface MenuItem {
   menu_id: number
   menu_name: string
   menu_description: string | null
-  menu_image: string | null
   category_id: number | null
   price: number
   menu_sort: number | null
@@ -43,11 +42,9 @@ export interface Order {
   order_id: string
   table_id: number | null
   customer_id: string | null
-  order_status: OrderStatus
   payment_status: PaymentStatus
   stripe_payment_intent_id: string | null
-  total_amount: number | null
-  notes: string | null
+  total_amount: number
   created_at: string
   updated_at: string
   restaurant_tables?: RestaurantTable
@@ -62,5 +59,6 @@ export interface OrderItem {
   unit_price: number
   quantity: number
   item_note: string | null
-  item_status: OrderStatus
+  item_status: ItemStatus
+  created_at: string
 }

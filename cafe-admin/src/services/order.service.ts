@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/client'
-import type { Order, OrderStatus } from '@/types/database.types'
+import type { Order, ItemStatus } from '@/types/database.types'
 
 export const OrderService = {
   async getAll(): Promise<Order[]> {
@@ -11,28 +11,28 @@ export const OrderService = {
         restaurant_tables(table_number, table_label),
         order_items(*)
       `)
-      .order('created_at', { ascending: false })
+      .order('created_at', { ascending: true })
 
     if (error) throw error
     return data ?? []
   },
 
-  async updateStatus(orderId: string, status: OrderStatus): Promise<void> {
+  async updateItemStatus(orderItemId: number, status: ItemStatus): Promise<void> {
     const supabase = createClient()
     const { error } = await supabase
-      .from('orders')
-      .update({ order_status: status })
-      .eq('order_id', orderId)
+      .from('order_items')
+      .update({ item_status: status })
+      .eq('order_item_id', orderItemId)
 
     if (error) throw error
   },
 
-  async updatePaymentStatus(orderId: string, paymentStatus: string): Promise<void> {
+  async cancelItem(orderItemId: number): Promise<void> {
     const supabase = createClient()
     const { error } = await supabase
-      .from('orders')
-      .update({ payment_status: paymentStatus })
-      .eq('order_id', orderId)
+      .from('order_items')
+      .update({ item_status: 'cancelled' })
+      .eq('order_item_id', orderItemId)
 
     if (error) throw error
   },
@@ -45,6 +45,11 @@ export const OrderService = {
         event: '*',
         schema: 'public',
         table: 'orders',
+      }, callback)
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'order_items',
       }, callback)
       .subscribe()
 

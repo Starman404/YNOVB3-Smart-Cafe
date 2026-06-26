@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { OrderService } from '@/services/order.service'
-import type { Order, OrderStatus } from '@/types/database.types'
+import type { Order, ItemStatus } from '@/types/database.types'
 
 export const ORDERS_QUERY_KEY = ['orders'] as const
 
@@ -9,15 +9,10 @@ export function useOrders() {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    // On retourne une fonction sync qui lance le removeChannel sans await
     const unsubscribe = OrderService.subscribeToOrders(() => {
       queryClient.invalidateQueries({ queryKey: ORDERS_QUERY_KEY })
     })
-
-    return () => {
-      // void évite le problème de retour Promise dans le cleanup
-      void unsubscribe()
-    }
+    return () => { void unsubscribe() }
   }, [queryClient])
 
   return useQuery({
@@ -26,21 +21,26 @@ export function useOrders() {
   })
 }
 
-export function useUpdateOrderStatus() {
+export function useUpdateItemStatus() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ orderId, status }: { orderId: string; status: OrderStatus }) =>
-      OrderService.updateStatus(orderId, status),
+    mutationFn: ({ orderItemId, status }: { orderItemId: number; status: ItemStatus }) =>
+      OrderService.updateItemStatus(orderItemId, status),
 
-    onMutate: async ({ orderId, status }) => {
+    onMutate: async ({ orderItemId, status }) => {
       await queryClient.cancelQueries({ queryKey: ORDERS_QUERY_KEY })
       const previous = queryClient.getQueryData<Order[]>(ORDERS_QUERY_KEY)
 
       queryClient.setQueryData<Order[]>(ORDERS_QUERY_KEY, (old = []) =>
-        old.map((o) =>
-          o.order_id === orderId ? { ...o, order_status: status } : o
-        )
+        old.map((order) => ({
+          ...order,
+          order_items: order.order_items?.map((item) =>
+            item.order_item_id === orderItemId
+              ? { ...item, item_status: status }
+              : item
+          ),
+        }))
       )
 
       return { previous }
