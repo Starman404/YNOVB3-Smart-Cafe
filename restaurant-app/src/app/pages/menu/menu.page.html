@@ -30,9 +30,6 @@
       </div>
 
       <div class="dish" *ngFor="let item of itemsByCategory[cat.category_id]">
-        <ion-thumbnail *ngIf="item.menu_image" class="dish-thumb">
-          <img [src]="item.menu_image" [alt]="item.menu_name" />
-        </ion-thumbnail>
         <div class="dish-info">
           <h3 class="dish-name">{{ item.menu_name }}</h3>
           <p class="dish-desc">{{ item.menu_description }}</p>

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonThumbnail
-} from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { MenuService, Category, MenuItem } from '../../services/menu.service';
 import { CartService } from '../../services/cart.service';
@@ -12,7 +10,7 @@ import { CartService } from '../../services/cart.service';
   templateUrl: './menu.page.html',
   styleUrls: ['./menu.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, IonThumbnail],
+  imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent],
 })
 export class MenuPage implements OnInit {
   categories: Category[] = [];

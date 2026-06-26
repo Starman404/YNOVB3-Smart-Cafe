@@ -11,7 +11,6 @@ export interface MenuItem {
   menu_id: number;
   menu_name: string;
   menu_description: string | null;
-  menu_image: string | null;
   category_id: number;
   price: number;
   is_available: boolean;
@@ -41,7 +40,7 @@ export class MenuService {
   async getAvailableItems(): Promise<MenuItem[]> {
     const { data, error } = await this.supabase.client
       .from('menu_items')
-      .select('menu_id, menu_name, menu_description, menu_image, category_id, price, is_available')
+      .select('menu_id, menu_name, menu_description, category_id, price, is_available')
       .eq('is_available', true)
       .order('menu_sort', { ascending: true });
 
