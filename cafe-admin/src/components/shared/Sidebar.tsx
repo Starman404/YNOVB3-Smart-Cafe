@@ -10,15 +10,17 @@ import {
   ClipboardList,
   UtensilsCrossed,
   TableProperties,
+  History,
   LogOut,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const NAV_ITEMS = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/dashboard/orders', label: 'Commandes', icon: ClipboardList },
-  { href: '/dashboard/menu', label: 'Menu', icon: UtensilsCrossed },
-  { href: '/dashboard/tables', label: 'Tables', icon: TableProperties },
+  { href: '/dashboard',         label: 'Dashboard',   icon: LayoutDashboard },
+  { href: '/dashboard/orders',  label: 'Commandes',   icon: ClipboardList },
+  { href: '/dashboard/menu',    label: 'Menu',         icon: UtensilsCrossed },
+  { href: '/dashboard/tables',  label: 'Tables',       icon: TableProperties },
+  { href: '/dashboard/history', label: 'Historique',  icon: History },
 ] as const
 
 export function Sidebar() {
