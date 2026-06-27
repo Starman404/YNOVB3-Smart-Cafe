@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/client'
 import type { Category, MenuItem } from '@/types/database.types'
 
 export const MenuService = {
+  // Catégories
   async getCategories(): Promise<Category[]> {
     const supabase = createClient()
     const { data, error } = await supabase
@@ -13,6 +14,36 @@ export const MenuService = {
     return data ?? []
   },
 
+  async createCategory(name: string, sort: number | null): Promise<void> {
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('categories')
+      .insert({ category_name: name, category_sort: sort })
+
+    if (error) throw error
+  },
+
+  async updateCategory(id: number, name: string, sort: number | null): Promise<void> {
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('categories')
+      .update({ category_name: name, category_sort: sort })
+      .eq('category_id', id)
+
+    if (error) throw error
+  },
+
+  async deleteCategory(id: number): Promise<void> {
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('categories')
+      .delete()
+      .eq('category_id', id)
+
+    if (error) throw error
+  },
+
+  // Articles
   async getItems(): Promise<MenuItem[]> {
     const supabase = createClient()
     const { data, error } = await supabase
@@ -58,5 +89,29 @@ export const MenuService = {
       .eq('menu_id', menuId)
 
     if (error) throw error
+  },
+
+  async reorderCategories(ids: number[]): Promise<void> {
+    const supabase = createClient()
+    await Promise.all(
+      ids.map((id, index) =>
+        supabase
+          .from('categories')
+          .update({ category_sort: index + 1 })
+          .eq('category_id', id)
+      )
+    )
+  },
+
+  async reorderItems(ids: number[]): Promise<void> {
+    const supabase = createClient()
+    await Promise.all(
+      ids.map((id, index) =>
+        supabase
+          .from('menu_items')
+          .update({ menu_sort: index + 1 })
+          .eq('menu_id', id)
+      )
+    )
   },
 }
