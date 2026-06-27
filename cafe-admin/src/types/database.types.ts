@@ -62,3 +62,10 @@ export interface OrderItem {
   item_status: ItemStatus
   created_at: string
 }
+
+export interface Account {
+  user_id: string
+  user_name: string
+  user_email: string | null
+  created_at: string
+}

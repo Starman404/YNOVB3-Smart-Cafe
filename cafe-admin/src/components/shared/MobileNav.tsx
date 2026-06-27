@@ -9,14 +9,16 @@ import {
   UtensilsCrossed,
   TableProperties,
   History,
+  Users,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
-  { href: '/dashboard',         label: 'Dashboard',  icon: LayoutDashboard },
-  { href: '/dashboard/orders',  label: 'Commandes',  icon: ClipboardList },
-  { href: '/dashboard/menu',    label: 'Menu',        icon: UtensilsCrossed },
-  { href: '/dashboard/tables',  label: 'Tables',      icon: TableProperties },
-  { href: '/dashboard/history', label: 'Historique', icon: History },
+  { href: '/dashboard',          label: 'Dashboard',  icon: LayoutDashboard },
+  { href: '/dashboard/orders',   label: 'Commandes',  icon: ClipboardList },
+  { href: '/dashboard/menu',     label: 'Menu',       icon: UtensilsCrossed },
+  { href: '/dashboard/tables',   label: 'Tables',     icon: TableProperties },
+  { href: '/dashboard/history',  label: 'Historique', icon: History },
+  { href: '/dashboard/accounts', label: 'Clients',    icon: Users },
 ] as const
 
 export function MobileNav() {
