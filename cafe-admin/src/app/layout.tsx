@@ -14,9 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Smart Café — Gestion",
-  description: "Application de gestion du Smart Café",
-};
+  title: {
+    default: 'Smart Café',
+    template: '%s',
+  },
+  description: 'Application de gestion du Smart Café',
+}
 
 export default function RootLayout({
   children,
