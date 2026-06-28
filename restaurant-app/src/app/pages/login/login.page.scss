@@ -25,11 +25,15 @@
 .field {
   --background: var(--lux-night-soft);
   --color: var(--lux-ivory);
-  --border-color: var(--lux-sage);
-  border: 1px solid var(--lux-sage);
+  --border-color: var(--lux-stone);
+  --highlight-color-focused: var(--lux-gold);
+  --highlight-color-valid: var(--lux-gold);
+  --highlight-color-invalid: var(--lux-bordeaux);
+  border: 1px solid var(--lux-stone);
   border-radius: 2px;
   margin-bottom: 14px;
 }
+
 
 .error {
   color: var(--lux-bordeaux);

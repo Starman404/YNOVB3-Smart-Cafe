@@ -1,2 +1,128 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+// =============================================
+// LUXE — Design tokens
+// =============================================
+
+:root {
+  // Palette (thème sombre par défaut)
+  --lux-night: #131313
+  --lux-night-soft: #161613;
+  --lux-stone: #3A3835;
+  --lux-ivory: #F7F4EE;
+  --lux-ivory-dim: #C9C4B8;
+  --lux-gold: #C9A769;
+  --lux-gold-soft: rgba(201, 167, 105, 0.18);
+  --lux-bordeaux: #6B1E23;
+  --lux-bordeaux-soft: rgba(107, 30, 35, 0.18);
+
+  --lux-font-display: 'Fraunces', serif;
+  --lux-font-body: 'Inter', -apple-system, sans-serif;
+  --lux-font-mono: 'IBM Plex Mono', monospace;
+
+  --ion-background-color: var(--lux-night);
+  --ion-text-color: var(--lux-ivory);
+  --ion-toolbar-background: var(--lux-night);
+  --ion-toolbar-color: var(--lux-ivory);
+  --ion-item-background: transparent;
+  --ion-border-color: var(--lux-stone);
+
+  --ion-tab-bar-background: var(--lux-night-soft);
+  --ion-tab-bar-color: var(--lux-ivory-dim);
+  --ion-tab-bar-color-selected: var(--lux-gold);
+
+  --ion-color-primary: #C9A769;
+  --ion-color-primary-rgb: 201, 167, 105;
+  --ion-color-primary-contrast: #0B1410;
+  --ion-color-primary-contrast-rgb: 11, 20, 16;
+  --ion-color-primary-shade: #b0905c;
+  --ion-color-primary-tint: #cdad77;
+
+  --ion-color-danger: #6B1E23;
+  --ion-color-danger-rgb: 107, 30, 35;
+  --ion-color-danger-contrast: #F7F4EE;
+  --ion-color-danger-contrast-rgb: 247, 244, 238;
+  --ion-color-danger-shade: #5e1a1f;
+  --ion-color-danger-tint: #793339;
+
+  // Jamais utilisée intentionnellement dans nos pages, mais Ionic l'utilise
+  // en interne par défaut (ex. couleur de validité des champs, caret inclus)
+  // — sans ce réglage, son vert de stock #2dd36f apparaît malgré nous.
+  --ion-color-success: #C9A769;
+  --ion-color-success-rgb: 201, 167, 105;
+  --ion-color-success-contrast: #0B1410;
+  --ion-color-success-contrast-rgb: 11, 20, 16;
+  --ion-color-success-shade: #b0905c;
+  --ion-color-success-tint: #cdad77;
+}
+
+// =============================================
+// Variante claire — appliquée via la classe .theme-light sur <body>
+// =============================================
+
+body.theme-light {
+  --lux-night: #F7F4EE;
+  --lux-night-soft: #FFFFFF;
+  --lux-stone: #E2DDD3;      // gris chaud clair
+  --lux-ivory: #1A1A18;
+  --lux-ivory-dim: #5C5850;
+  --lux-gold: #9C7A3D;
+  --lux-bordeaux: #6B1E23;
+
+  --ion-background-color: var(--lux-night);
+  --ion-text-color: var(--lux-ivory);
+  --ion-toolbar-background: var(--lux-night);
+  --ion-toolbar-color: var(--lux-ivory);
+  --ion-border-color: var(--lux-stone);
+
+  --ion-tab-bar-background: var(--lux-night-soft);
+  --ion-tab-bar-color: var(--lux-ivory-dim);
+  --ion-tab-bar-color-selected: var(--lux-gold);
+
+  --ion-color-success: #9C7A3D;
+  --ion-color-success-rgb: 156, 122, 61;
+  --ion-color-success-contrast: #F7F4EE;
+  --ion-color-success-contrast-rgb: 247, 244, 238;
+}
+
+// Filet de sécurité : force les popups/alertes à suivre notre thème plutôt
+// que le mode système, même si Ionic essaie d'imposer ses propres variables
+// dans un media query "prefers-color-scheme".
+body.theme-light ion-alert,
+body.theme-light ion-action-sheet,
+body.theme-light ion-toast,
+body.theme-light ion-modal {
+  --ion-background-color: #FFFFFF;
+  --ion-text-color: #1A1A18;
+  --background: #FFFFFF;
+  --color: #1A1A18;
+}
+
+body:not(.theme-light) ion-alert,
+body:not(.theme-light) ion-action-sheet,
+body:not(.theme-light) ion-toast,
+body:not(.theme-light) ion-modal {
+  --ion-background-color: #161613;
+  --ion-text-color: #F7F4EE;
+  --background: #161613;
+  --color: #F7F4EE;
+}
+
+body {
+  font-family: var(--lux-font-body);
+}
+
+h1, h2, h3, .lux-display {
+  font-family: var(--lux-font-display);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.lux-mono {
+  font-family: var(--lux-font-mono);
+}
+
+.lux-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--lux-gold) 50%, transparent);
+  opacity: 0.5;
+  margin: 16px 0;
+}

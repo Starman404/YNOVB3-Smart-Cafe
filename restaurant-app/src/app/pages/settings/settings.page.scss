@@ -1,0 +1,95 @@
+.lux-toolbar {
+  --background: var(--lux-night);
+  --color: var(--lux-ivory);
+  text-align: center;
+}
+
+.section {
+  padding: 20px 20px 8px;
+  border-bottom: 1px solid var(--lux-stone);
+}
+
+.section-title {
+  font-family: var(--lux-font-display);
+  font-size: 1rem;
+  color: var(--lux-gold);
+  margin: 0 0 14px;
+}
+
+.theme-item {
+  --background: transparent;
+  --padding-start: 0;
+  color: var(--lux-ivory);
+}
+
+.guest-msg {
+  color: var(--lux-ivory-dim);
+  font-size: 0.88rem;
+  margin-bottom: 14px;
+}
+
+.cta-gold {
+  --background: var(--lux-gold);
+  --color: var(--lux-night);
+  --border-radius: 2px;
+  font-weight: 600;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--lux-stone);
+}
+
+.row-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.row-label {
+  font-size: 0.72rem;
+  color: var(--lux-ivory-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.row-value {
+  color: var(--lux-ivory);
+  font-size: 0.95rem;
+}
+
+.row-action {
+  background: none;
+  border: none;
+  color: var(--lux-gold);
+  font-size: 0.82rem;
+  text-decoration: underline;
+  flex-shrink: 0;
+}
+
+.success-msg {
+  color: var(--lux-gold);
+  font-size: 0.8rem;
+  text-align: center;
+  margin-top: 14px;
+}
+
+.error {
+  color: var(--lux-bordeaux);
+  font-size: 0.82rem;
+  text-align: center;
+  padding: 0 20px;
+  margin-top: 4px;
+}
+
+.logout-btn {
+  --background: transparent;
+  --color: var(--lux-bordeaux);
+  --border-color: var(--lux-bordeaux);
+  --border-style: solid;
+  --border-width: 1px;
+  --border-radius: 2px;
+}

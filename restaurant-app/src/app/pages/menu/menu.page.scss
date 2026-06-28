@@ -20,13 +20,13 @@
   top: 0;
   background: var(--lux-night);
   z-index: 5;
-  border-bottom: 1px solid var(--lux-sage);
+  border-bottom: 1px solid var(--lux-stone);
 }
 
 .rail-chip {
   flex: 0 0 auto;
   background: transparent;
-  border: 1px solid var(--lux-sage);
+  border: 1px solid var(--lux-stone);
   color: var(--lux-ivory-dim);
   border-radius: 20px;
   padding: 6px 16px;
@@ -62,7 +62,7 @@
   display: flex;
   gap: 14px;
   padding: 14px 0;
-  border-bottom: 1px solid rgba(63, 82, 71, 0.4);
+  border-bottom: 1px solid var(--lux-stone);
 }
 
 .dish-thumb {

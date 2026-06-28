@@ -69,7 +69,7 @@ export class OrderService {
       menu_name: l.menu_name,
       unit_price: l.unit_price,
       quantity: l.quantity,
-      item_status: 'pending',
+      item_status: 'confirmed',
     }));
 
     const { error: itemsError } = await this.supabase.client.from('order_items').insert(rows);

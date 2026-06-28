@@ -9,8 +9,9 @@ export interface AuthResult {
 }
 
 /**
- * Responsable uniquement de l'authentification : connexion, inscription,
- * déconnexion, état de session. Ne touche à aucune autre table métier.
+ * Responsable uniquement de l'authentification et du profil associé :
+ * connexion, inscription, déconnexion, nom, email, mot de passe. Ne touche
+ * à aucune autre table métier (commandes, menu...).
  */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -33,6 +34,10 @@ export class AuthService {
 
   get currentUserId(): string | null {
     return this.sessionSubject.value?.user.id ?? null;
+  }
+
+  get currentUserEmail(): string | null {
+    return this.sessionSubject.value?.user.email ?? null;
   }
 
   async signIn(email: string, password: string): Promise<AuthResult> {
@@ -62,6 +67,59 @@ export class AuthService {
     await this.supabase.client.auth.signOut();
   }
 
+  async getMyAccountName(): Promise<string | null> {
+    if (!this.currentUserId) return null;
+
+    const { data, error } = await this.supabase.client
+      .from('accounts')
+      .select('user_name')
+      .eq('user_id', this.currentUserId)
+      .single();
+
+    if (error || !data) return null;
+    return data.user_name;
+  }
+
+  async updateName(newName: string): Promise<AuthResult> {
+    if (!this.currentUserId) {
+      return { success: false, errorMessage: 'Vous devez être connecté.' };
+    }
+
+    const { error } = await this.supabase.client
+      .from('accounts')
+      .update({ user_name: newName })
+      .eq('user_id', this.currentUserId);
+
+    if (error) return { success: false, errorMessage: 'Impossible de mettre à jour le nom.' };
+    return { success: true };
+  }
+
+  /**
+   * Met à jour l'email. Selon la configuration Supabase Auth, un email de
+   * confirmation peut être envoyé avant que le changement soit définitif —
+   * dans ce cas, `currentUserEmail` ne reflètera la nouvelle valeur qu'après
+   * que le lien de confirmation a été cliqué.
+   */
+  async updateEmail(newEmail: string): Promise<AuthResult> {
+    const { error: authError } = await this.supabase.client.auth.updateUser({ email: newEmail });
+    if (authError) return { success: false, errorMessage: this.translateError(authError.message) };
+
+    if (this.currentUserId) {
+      await this.supabase.client
+        .from('accounts')
+        .update({ user_email: newEmail })
+        .eq('user_id', this.currentUserId);
+    }
+
+    return { success: true };
+  }
+
+  async updatePassword(newPassword: string): Promise<AuthResult> {
+    const { error } = await this.supabase.client.auth.updateUser({ password: newPassword });
+    if (error) return { success: false, errorMessage: this.translateError(error.message) };
+    return { success: true };
+  }
+
   private translateError(message: string): string {
     if (message.includes('Invalid login credentials')) {
       return 'Email ou mot de passe incorrect.';
@@ -71,6 +129,9 @@ export class AuthService {
     }
     if (message.includes('Password should be at least')) {
       return 'Le mot de passe doit contenir au moins 6 caractères.';
+    }
+    if (message.includes('email')) {
+      return 'Adresse email invalide ou déjà utilisée.';
     }
     return 'Une erreur est survenue. Merci de réessayer.';
   }
