@@ -12,7 +12,7 @@ export function QRCodeDisplay({ tableNumber, size = 160 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   // URL que le client scannera pour accéder à sa table
-  const url = `${process.env.NEXT_PUBLIC_CLIENT_APP_URL ?? 'http://localhost:8100'}/table/${tableNumber}`
+  const url = `${process.env.NEXT_PUBLIC_CLIENT_APP_URL ?? 'https://ynovb-3-smart-cafe.vercel.app'}/landing?table=${tableNumber}`
 
   useEffect(() => {
     if (!canvasRef.current) return
