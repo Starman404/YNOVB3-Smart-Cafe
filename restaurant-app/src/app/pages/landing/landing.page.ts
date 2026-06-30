@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { IonContent, IonInput, IonButton } from '@ionic/angular/standalone';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TableService, RestaurantTable } from '../../services/table.service';
+import { BarcodeScanner, BarcodeFormat } from '@capacitor-mlkit/barcode-scanning';
+
+type ViewMode = 'scan' | 'manual';
 
 @Component({
   selector: 'app-landing',
@@ -13,9 +16,12 @@ import { TableService, RestaurantTable } from '../../services/table.service';
   imports: [CommonModule, FormsModule, IonContent, IonInput, IonButton],
 })
 export class LandingPage implements OnInit {
+  viewMode: ViewMode = 'scan';
+
   tableNumberInput = '';
   table: RestaurantTable | null = null;
   checking = false;
+  scanning = false;
   error = '';
 
   constructor(
@@ -27,11 +33,71 @@ export class LandingPage implements OnInit {
   async ngOnInit() {
     this.table = this.tableService.current;
 
-    // QR code : /landing?table=12 -> on vérifie automatiquement
+    // Lien direct (deep link) : /landing?table=12 -> vérification automatique,
+    // sans passer par la caméra (utile pour les tests web/desktop notamment).
     const qrTable = this.route.snapshot.queryParamMap.get('table');
     if (qrTable && !this.table) {
       this.tableNumberInput = qrTable;
       await this.confirmTable();
+    }
+  }
+
+  switchToManual() {
+    this.viewMode = 'manual';
+    this.error = '';
+  }
+
+  switchToScan() {
+    this.viewMode = 'scan';
+    this.error = '';
+  }
+
+  async startScan() {
+    this.error = '';
+
+    const { camera } = await BarcodeScanner.requestPermissions();
+    if (camera !== 'granted' && camera !== 'limited') {
+      this.error = "Merci d'autoriser l'accès à la caméra pour scanner le QR code.";
+      return;
+    }
+
+    this.scanning = true;
+
+    try {
+      const { barcodes } = await BarcodeScanner.scan({ formats: [BarcodeFormat.QrCode] });
+      this.scanning = false;
+
+      const rawValue = barcodes[0]?.rawValue;
+      if (!rawValue) {
+        this.error = 'Aucun QR code détecté. Réessayez.';
+        return;
+      }
+
+      const tableNumber = this.extractTableNumber(rawValue);
+      if (!tableNumber) {
+        this.error = "Ce QR code ne correspond pas à une table de l'établissement.";
+        return;
+      }
+
+      this.tableNumberInput = String(tableNumber);
+      await this.confirmTable();
+    } catch (err) {
+      this.scanning = false;
+      this.error = 'Le scan a été interrompu. Réessayez.';
+    }
+  }
+
+  /**
+   * Le QR code encode une URL complète (ex. https://monapp.com/landing?table=12).
+   * On en extrait juste le numéro de table.
+   */
+  private extractTableNumber(rawValue: string): number | null {
+    try {
+      const url = new URL(rawValue);
+      const table = url.searchParams.get('table');
+      return table ? parseInt(table, 10) : null;
+    } catch {
+      return null;
     }
   }
 
@@ -61,10 +127,10 @@ export class LandingPage implements OnInit {
     this.tableService.clear();
     this.table = null;
     this.tableNumberInput = '';
+    this.viewMode = 'scan';
   }
 
   goNext() {
-    // Étape 3 ajoutera la vraie page de login ; pour l'instant on va directement aux tabs.
     this.router.navigateByUrl('/login');
   }
 }

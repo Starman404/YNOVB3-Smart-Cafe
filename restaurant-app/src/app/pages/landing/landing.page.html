@@ -3,7 +3,31 @@
 
     <h1>Bienvenue</h1>
 
-    <div class="block" *ngIf="!table">
+    <!-- Table déjà confirmée -->
+    <div class="block" *ngIf="table">
+      <p>Table {{ table.table_number }} — {{ table.table_label }}</p>
+      <ion-button expand="block" (click)="goNext()">Continuer</ion-button>
+      <button class="link" (click)="changeTable()">Ce n'est pas ma table</button>
+    </div>
+
+    <!-- Mode scan (par défaut) -->
+    <div class="block" *ngIf="!table && viewMode === 'scan'">
+      <p class="instruction">Scannez le QR code posé sur votre table</p>
+
+      <button class="scan-zone" (click)="startScan()" [disabled]="scanning">
+        <span class="scan-icon">▢</span>
+        <span>{{ scanning ? 'Scan en cours…' : 'Scanner le QR code' }}</span>
+      </button>
+
+      <p class="error" *ngIf="error">{{ error }}</p>
+
+      <button class="link" (click)="switchToManual()">
+        Saisir le numéro manuellement
+      </button>
+    </div>
+
+    <!-- Mode saisie manuelle -->
+    <div class="block" *ngIf="!table && viewMode === 'manual'">
       <p>Numéro de table</p>
       <ion-input
         type="number"
@@ -17,12 +41,10 @@
       </ion-button>
 
       <p class="error" *ngIf="error">{{ error }}</p>
-    </div>
 
-    <div class="block" *ngIf="table">
-      <p>Table {{ table.table_number }} — {{ table.table_label }}</p>
-      <ion-button expand="block" (click)="goNext()">Continuer</ion-button>
-      <button class="link" (click)="changeTable()">Ce n'est pas ma table</button>
+      <button class="link" (click)="switchToScan()">
+        Revenir au scan
+      </button>
     </div>
 
   </div>

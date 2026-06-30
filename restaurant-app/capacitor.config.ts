@@ -1,11 +1,11 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
+  appId: 'ynovb-3-smart-cafe.restaurantapp',
   appName: 'restaurant-app',
   webDir: 'www',
   server: {
-    hostname: 'app.luxecafe.fr',
+    hostname: 'ynovb-3-smart-cafe.vercel.app',
     androidScheme: 'https',
   },
 };
