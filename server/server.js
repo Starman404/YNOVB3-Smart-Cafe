@@ -131,9 +131,14 @@ app.post('/notify-served', async (req, res) => {
 
     await messaging.send({
       token: fcmToken,
+      notification: {
+        title: 'Votre plat est prêt !',
+        body: `${menuName} vient d'être servi.`,
+      },
       data: {
         title: 'Votre plat est prêt !',
         body: `${menuName} vient d'être servi.`,
+        type: 'served',
       },
       android: {
         priority: 'high',
@@ -141,6 +146,8 @@ app.post('/notify-served', async (req, res) => {
           title: 'Votre plat est prêt !',
           body: `${menuName} vient d'être servi.`,
           channelId: 'smart_cafe_default',
+          sound: 'default',
+          defaultSound: true,
         },
       },
       apns: {
