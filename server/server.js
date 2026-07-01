@@ -7,7 +7,6 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
 const { getMessaging } = require('firebase-admin/messaging');
-const admin = require('firebase-admin');
 
 const admin = require("firebase-admin");
 
