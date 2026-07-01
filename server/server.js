@@ -6,14 +6,41 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 const admin = require("firebase-admin");
 
+function normalizeFirebasePrivateKey(key) {
+  if (!key) return key;
+  let normalized = key.trim();
+
+  if (normalized.startsWith('{')) {
+    try {
+      const parsed = JSON.parse(normalized);
+      if (parsed.private_key) {
+        return parsed.private_key.replace(/\\n/g, '\n');
+      }
+    } catch (err) {
+      // continue to string normalization below
+    }
+  }
+
+  if (normalized.includes('\\n')) {
+    normalized = normalized.replace(/\\n/g, '\n');
+  }
+
+  return normalized;
+}
+
 let firebaseCredential;
+let envCredential = null;
 
 if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
-  firebaseCredential = {
+  envCredential = {
     projectId: process.env.FIREBASE_PROJECT_ID,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    privateKey: normalizeFirebasePrivateKey(process.env.FIREBASE_PRIVATE_KEY),
   };
+}
+
+if (envCredential && /-----BEGIN .*PRIVATE KEY-----/.test(envCredential.privateKey)) {
+  firebaseCredential = envCredential;
 } else {
   firebaseCredential = require('./ynovb3-554a8-firebase-adminsdk-fbsvc-e0a9537d23.json');
 }
