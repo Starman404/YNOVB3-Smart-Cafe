@@ -103,6 +103,44 @@ async function sendFcmToDevice(deviceId, payload, options = {}) {
   }
 }
 
+function buildVisibleNotificationPayload(title, body, type = 'notification') {
+  return {
+    notification: {
+      title,
+      body,
+    },
+    data: {
+      title,
+      body,
+      type,
+    },
+    android: {
+      priority: 'high',
+      ttl: '600s',
+      notification: {
+        title,
+        body,
+        channelId: 'smart_cafe_default',
+        sound: 'default',
+        defaultSound: true,
+        clickAction: 'OPEN_ACTIVITY_1',
+      },
+    },
+    apns: {
+      payload: {
+        aps: {
+          sound: 'default',
+          contentAvailable: true,
+          badge: 1,
+        },
+      },
+      headers: {
+        'apns-priority': '10',
+      },
+    },
+  };
+}
+
 // Stripe
 
 app.post('/payment-sheet', async (req, res) => {
@@ -143,14 +181,30 @@ app.post('/notify-purchase', async (req, res) => {
   if (!deviceId) return res.status(400).json({ error: 'deviceId requis' });
 
   try {
-    const result = await sendFcmToDevice(deviceId, {
-      notification: {
-        title: 'Paiement confirmé',
-        body: 'Votre paiement a été effectué avec succès. Merci !',
-      },
-    });
+    const result = await sendFcmToDevice(
+      deviceId,
+      buildVisibleNotificationPayload('Paiement confirmé', 'Votre paiement a été effectué avec succès. Merci !', 'purchase')
+    );
 
     console.log('FCM purchase message sent:', result);
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/notify-test', async (req, res) => {
+  const { deviceId } = req.body;
+  if (!deviceId) return res.status(400).json({ error: 'deviceId requis' });
+
+  try {
+    const result = await sendFcmToDevice(
+      deviceId,
+      buildVisibleNotificationPayload('Test Android', 'Ceci est une notification de test visible', 'test')
+    );
+
+    console.log('FCM test message sent:', result);
     res.json(result);
   } catch (err) {
     console.error(err);
@@ -165,36 +219,11 @@ app.post('/notify-served', async (req, res) => {
   }
 
   try {
-    const notificationPayload = {
-      notification: {
-        title: 'Votre plat est prêt !',
-        body: `${menuName} vient d'être servi.`,
-      },
-      data: {
-        title: 'Votre plat est prêt !',
-        body: `${menuName} vient d'être servi.`,
-        type: 'served',
-      },
-      android: {
-        priority: 'high',
-        notification: {
-          title: 'Votre plat est prêt !',
-          body: `${menuName} vient d'être servi.`,
-          channelId: 'smart_cafe_default',
-          sound: 'default',
-          defaultSound: true,
-        },
-      },
-      apns: {
-        payload: {
-          aps: {
-            sound: 'default',
-            contentAvailable: true,
-            badge: 1,
-          },
-        },
-      },
-    };
+    const notificationPayload = buildVisibleNotificationPayload(
+      'Votre plat est prêt !',
+      `${menuName} vient d'être servi.`,
+      'served'
+    );
 
     if (deviceId) {
       const result = await sendFcmToDevice(deviceId, notificationPayload);
@@ -307,9 +336,7 @@ app.post('/notify-custom', async (req, res) => {
   const { deviceId, title, body } = req.body;
 
   try {
-    const result = await sendFcmToDevice(deviceId, {
-      notification: { title, body },
-    });
+    const result = await sendFcmToDevice(deviceId, buildVisibleNotificationPayload(title, body, 'custom'));
 
     console.log('FCM custom message sent:', result);
     res.json(result);
