@@ -116,7 +116,6 @@ function buildVisibleNotificationPayload(title, body, type = 'notification') {
     },
     android: {
       priority: 'high',
-      ttl: '600s',
       notification: {
         title,
         body,
