@@ -6,12 +6,20 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 const admin = require("firebase-admin");
 
-admin.initializeApp({
-  credential: admin.credential.cert({
+let firebaseCredential;
+
+if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
+  firebaseCredential = {
     projectId: process.env.FIREBASE_PROJECT_ID,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
     privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-  }),
+  };
+} else {
+  firebaseCredential = require('./ynovb3-554a8-firebase-adminsdk-fbsvc-e0a9537d23.json');
+}
+
+admin.initializeApp({
+  credential: admin.cert(firebaseCredential),
 });
 
 const db = admin.firestore();
