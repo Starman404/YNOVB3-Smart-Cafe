@@ -4,10 +4,6 @@ const Stripe = require('stripe');
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-const { initializeApp, cert } = require('firebase-admin/app');
-const { getFirestore } = require('firebase-admin/firestore');
-const { getMessaging } = require('firebase-admin/messaging');
-
 const admin = require("firebase-admin");
 
 admin.initializeApp({
@@ -18,9 +14,9 @@ admin.initializeApp({
   }),
 });
 
-initializeApp({ credential: cert(serviceAccount) });
+const db = admin.firestore();
+const messaging = admin.messaging();
 
-const db = getFirestore();
 const app = express();
 
 app.use(cors({ origin: '*' }));
@@ -71,7 +67,7 @@ app.post('/notify-purchase', async (req, res) => {
   try {
     const fcmToken = await getFcmToken(deviceId);
 
-    await getMessaging().send({
+    await messaging.send({
       token: fcmToken,
       notification: {
         title: 'Paiement confirmé',
@@ -96,7 +92,7 @@ app.post('/notify-served', async (req, res) => {
   try {
     const fcmToken = await getFcmToken(deviceId);
 
-    await getMessaging().send({
+    await messaging.send({
       token: fcmToken,
       notification: {
         title: 'Votre plat est prêt !',
@@ -198,7 +194,7 @@ app.post('/notify-custom', async (req, res) => {
   try {
     const fcmToken = await getFcmToken(deviceId);
 
-    await getMessaging().send({
+    await messaging.send({
       token: fcmToken,
       notification: { title, body },
     });
@@ -210,4 +206,5 @@ app.post('/notify-custom', async (req, res) => {
   }
 });
 
-app.listen(4000, () => console.log('Backend sur http://localhost:4000'));
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => console.log('Backend sur http://localhost:' + PORT));
