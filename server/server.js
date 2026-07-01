@@ -4,7 +4,9 @@ const Stripe = require('stripe');
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-const admin = require("firebase-admin");
+const { initializeApp, cert } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
+const { getMessaging } = require('firebase-admin/messaging');
 
 function normalizeFirebasePrivateKey(key) {
   if (!key) return key;
@@ -45,12 +47,12 @@ if (envCredential && /-----BEGIN .*PRIVATE KEY-----/.test(envCredential.privateK
   firebaseCredential = require('./ynovb3-554a8-firebase-adminsdk-fbsvc-e0a9537d23.json');
 }
 
-admin.initializeApp({
-  credential: admin.cert(firebaseCredential),
+const firebaseApp = initializeApp({
+  credential: cert(firebaseCredential),
 });
 
-const db = admin.firestore();
-const messaging = admin.messaging();
+const db = getFirestore(firebaseApp);
+const messaging = getMessaging(firebaseApp);
 
 const app = express();
 
