@@ -66,6 +66,43 @@ async function getFcmToken(deviceId) {
   return doc.data().fcmToken;
 }
 
+async function removeFcmToken(deviceId) {
+  try {
+    await db.collection('devices').doc(deviceId).delete();
+    console.log('Removed stale FCM token for device:', deviceId);
+  } catch (err) {
+    console.warn('Unable to remove stale FCM token:', err);
+  }
+}
+
+async function sendFcmToDevice(deviceId, payload, options = {}) {
+  const fcmToken = await getFcmToken(deviceId);
+  if (!fcmToken) {
+    throw new Error(`No FCM token for device: ${deviceId}`);
+  }
+
+  try {
+    const response = await messaging.send({
+      token: fcmToken,
+      ...payload,
+      ...options,
+    });
+
+    return { success: true, deviceId, messageId: response };
+  } catch (err) {
+    const isUnregistered = err?.code === 'messaging/registration-token-not-registered' ||
+      err?.message?.includes('Requested entity was not found') ||
+      err?.cause?.response?.data?.error?.details?.some((detail) => detail?.errorCode === 'UNREGISTERED');
+
+    if (isUnregistered) {
+      await removeFcmToken(deviceId);
+      return { success: false, deviceId, removed: true, error: 'Token expired or unregistered' };
+    }
+
+    throw err;
+  }
+}
+
 // Stripe
 
 app.post('/payment-sheet', async (req, res) => {
@@ -106,36 +143,29 @@ app.post('/notify-purchase', async (req, res) => {
   if (!deviceId) return res.status(400).json({ error: 'deviceId requis' });
 
   try {
-    const fcmToken = await getFcmToken(deviceId);
-
-    const response = await messaging.send({
-      token: fcmToken,
+    const result = await sendFcmToDevice(deviceId, {
       notification: {
         title: 'Paiement confirmé',
         body: 'Votre paiement a été effectué avec succès. Merci !',
       },
     });
 
-    console.log('FCM purchase message sent:', response);
-    res.json({ success: true, messageId: response });
+    console.log('FCM purchase message sent:', result);
+    res.json(result);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
 
-
 app.post('/notify-served', async (req, res) => {
   const { deviceId, menuName } = req.body;
-  if (!deviceId || !menuName) {
-    return res.status(400).json({ error: 'deviceId et menuName requis' });
+  if (!menuName) {
+    return res.status(400).json({ error: 'menuName requis' });
   }
 
   try {
-    const fcmToken = await getFcmToken(deviceId);
-
-    const response = await messaging.send({
-      token: fcmToken,
+    const notificationPayload = {
       notification: {
         title: 'Votre plat est prêt !',
         body: `${menuName} vient d'être servi.`,
@@ -164,10 +194,28 @@ app.post('/notify-served', async (req, res) => {
           },
         },
       },
-    });
+    };
 
-    console.log('FCM served message sent:', response);
-    res.json({ success: true, messageId: response });
+    if (deviceId) {
+      const result = await sendFcmToDevice(deviceId, notificationPayload);
+      console.log('FCM served message sent:', result);
+      return res.json(result);
+    }
+
+    const snapshot = await db.collection('devices').get();
+    const results = [];
+
+    for (const doc of snapshot.docs) {
+      const targetDeviceId = doc.id;
+      const targetToken = doc.data().fcmToken;
+      if (!targetToken) continue;
+
+      const result = await sendFcmToDevice(targetDeviceId, notificationPayload);
+      results.push(result);
+    }
+
+    console.log('FCM served broadcast done:', results);
+    return res.json({ success: true, sent: results.filter((r) => r.success).length, failed: results.filter((r) => !r.success).length, results });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
@@ -259,15 +307,12 @@ app.post('/notify-custom', async (req, res) => {
   const { deviceId, title, body } = req.body;
 
   try {
-    const fcmToken = await getFcmToken(deviceId);
-
-    const response = await messaging.send({
-      token: fcmToken,
+    const result = await sendFcmToDevice(deviceId, {
       notification: { title, body },
     });
 
-    console.log('FCM custom message sent:', response);
-    res.json({ success: true, messageId: response });
+    console.log('FCM custom message sent:', result);
+    res.json(result);
   } catch (err) {
     console.error('Erreur:', err);
     res.status(500).json({ error: err.message });
