@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const Stripe = require('stripe');
 
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
 
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
@@ -69,6 +69,10 @@ async function getFcmToken(deviceId) {
 // Stripe
 
 app.post('/payment-sheet', async (req, res) => {
+  if (!stripe) {
+    return res.status(500).json({ error: 'Stripe non configuré' });
+  }
+
   try {
     const customer = await stripe.customers.create();
 
@@ -104,7 +108,7 @@ app.post('/notify-purchase', async (req, res) => {
   try {
     const fcmToken = await getFcmToken(deviceId);
 
-    await messaging.send({
+    const response = await messaging.send({
       token: fcmToken,
       notification: {
         title: 'Paiement confirmé',
@@ -112,7 +116,8 @@ app.post('/notify-purchase', async (req, res) => {
       },
     });
 
-    res.json({ success: true });
+    console.log('FCM purchase message sent:', response);
+    res.json({ success: true, messageId: response });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
@@ -129,7 +134,7 @@ app.post('/notify-served', async (req, res) => {
   try {
     const fcmToken = await getFcmToken(deviceId);
 
-    await messaging.send({
+    const response = await messaging.send({
       token: fcmToken,
       notification: {
         title: 'Votre plat est prêt !',
@@ -161,7 +166,8 @@ app.post('/notify-served', async (req, res) => {
       },
     });
 
-    res.json({ success: true });
+    console.log('FCM served message sent:', response);
+    res.json({ success: true, messageId: response });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
@@ -255,12 +261,13 @@ app.post('/notify-custom', async (req, res) => {
   try {
     const fcmToken = await getFcmToken(deviceId);
 
-    await messaging.send({
+    const response = await messaging.send({
       token: fcmToken,
       notification: { title, body },
     });
 
-    res.json({ success: true });
+    console.log('FCM custom message sent:', response);
+    res.json({ success: true, messageId: response });
   } catch (err) {
     console.error('Erreur:', err);
     res.status(500).json({ error: err.message });
