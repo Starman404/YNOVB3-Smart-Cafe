@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'ynovb-3-smart-cafe.restaurantapp',
+  appId: 'ynovbsmartcafe.restaurantapp',
   appName: 'restaurant-app',
   webDir: 'www',
   server: {

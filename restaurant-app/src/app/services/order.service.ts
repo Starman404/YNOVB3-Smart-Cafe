@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SupabaseClientService } from './supabase-client.service';
 import { CartLine } from './cart.service';
+import { environment } from '../../environments/environment';
 
 export type ItemStatus = 'pending' | 'confirmed' | 'preparing' | 'ready' | 'served' | 'cancelled';
 export type PaymentStatus = 'unpaid' | 'pending' | 'paid' | 'refunded' | 'failed';
@@ -23,20 +24,10 @@ export interface OrderItemRow {
   item_status: ItemStatus;
 }
 
-/**
- * Responsable de la commande ouverte d'une table : la trouver/la créer,
- * y ajouter des articles, suivre leur statut en temps réel. Une table n'a
- * jamais plus d'une commande non payée à la fois (garanti côté base).
- */
 @Injectable({ providedIn: 'root' })
 export class OrderService {
   constructor(private supabase: SupabaseClientService) {}
 
-  /**
-   * Trouve la commande ouverte de la table, ou en crée une si aucune
-   * n'existe encore. Fonctionne peu importe l'appareil — la donnée vit
-   * en base, pas dans le sessionStorage du téléphone.
-   */
   async getOrCreateOpenOrder(tableId: number, customerId: string | null): Promise<Order | null> {
     const { data, error } = await this.supabase.client.rpc('get_or_create_open_order', {
       p_table_id: tableId,
@@ -121,10 +112,19 @@ export class OrderService {
     return !error;
   }
 
-  /**
-   * S'abonne aux changements des articles (statut individuel) et de la
-   * commande (statut de paiement). Retourne une fonction de désinscription.
-   */
+
+  async notifyItemServed(deviceId: string, menuName: string): Promise<void> {
+    try {
+      await fetch(`${environment.apiUrl}/notify-served`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deviceId, menuName }),
+      });
+    } catch (err) {
+      console.error('Erreur envoi notification', err);
+    }
+  }
+
   subscribeToOrder(
     orderId: string,
     onItemsChange: () => void,

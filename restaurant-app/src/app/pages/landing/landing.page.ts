@@ -61,19 +61,31 @@ export class LandingPage implements OnInit {
       return;
     }
 
-    // Sur Android, le module Google Barcode Scanner doit être téléchargé via
-    // Play Services avant le tout premier scan — sinon scan() échoue avec
-    // "The Google Barcode Scanner Module is not available."
     const { available } = await BarcodeScanner.isGoogleBarcodeScannerModuleAvailable();
+
     if (!available) {
       this.scanning = true;
-      try {
-        await BarcodeScanner.installGoogleBarcodeScannerModule();
-      } catch {
+
+      // On s'abonne à l'événement de fin d'installation avant de déclencher
+      // le téléchargement — sinon on lance scan() alors que le module n'est
+      // pas encore prêt.
+      await new Promise<void>((resolve, reject) => {
+        BarcodeScanner.addListener('googleBarcodeScannerModuleInstallProgress', (event: any) => {
+          if (event.state === 'completed') {
+            resolve();
+          } else if (event.state === 'failed') {
+            reject(new Error('Installation échouée'));
+          }
+        });
+
+        BarcodeScanner.installGoogleBarcodeScannerModule().catch(reject);
+      }).catch(() => {
         this.scanning = false;
         this.error = "Impossible d'installer le module de scan. Vérifiez votre connexion et réessayez.";
         return;
-      }
+      });
+
+      if (!this.scanning) return;
     }
 
     this.scanning = true;

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "697265579830",
+    "project_id": "ynovb3-554a8",
+    "storage_bucket": "ynovb3-554a8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:697265579830:android:e3c0df0ee3c9d96b967597",
+        "android_client_info": {
+          "package_name": "ynovbsmartcafe.restaurantapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTTPo1Mf0l0vqXPQVtzalHnxg7kvIEZgM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

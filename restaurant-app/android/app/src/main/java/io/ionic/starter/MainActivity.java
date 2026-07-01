@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package ynovbsmartcafe.restaurantapp;
 
 import com.getcapacitor.BridgeActivity;
 

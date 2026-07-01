@@ -8,6 +8,7 @@ import { OrderService, Order, OrderItemRow } from '../../services/order.service'
 import { TableService } from '../../services/table.service';
 import { AuthService } from '../../services/auth.service';
 import { StripeService } from '../../services/stripe.service';
+import { DeviceService } from '../../services/device.service';
 
 const STATUS_LABELS: Record<string, string> = {
   pending: 'Envoyé',
@@ -26,11 +27,9 @@ const STATUS_LABELS: Record<string, string> = {
   imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonSpinner],
 })
 export class OrderPage implements OnInit, OnDestroy {
-  // Articles pas encore envoyés en cuisine — modifiables (+/-)
   cartLines: CartLine[] = [];
   cartTotal = 0;
 
-  // La commande ouverte de la table (peut être null si rien n'a encore été envoyé)
   activeOrder: Order | null = null;
   orderedItems: OrderItemRow[] = [];
 
@@ -46,7 +45,8 @@ export class OrderPage implements OnInit, OnDestroy {
     private orderService: OrderService,
     private tableService: TableService,
     private auth: AuthService,
-    private stripe: StripeService
+    private stripe: StripeService,
+    private deviceService: DeviceService
   ) {}
 
   async ngOnInit() {
@@ -97,16 +97,24 @@ export class OrderPage implements OnInit, OnDestroy {
     this.unsubscribe?.();
     this.unsubscribe = this.orderService.subscribeToOrder(
       order.order_id,
-      async () => { this.orderedItems = await this.orderService.getOrderItems(order.order_id); },
+      async () => {
+        const previousItems = [...this.orderedItems];
+        this.orderedItems = await this.orderService.getOrderItems(order.order_id);
+
+        const deviceId = await this.deviceService.getDeviceId();
+        for (const item of this.orderedItems) {
+          const wasNotServed = previousItems.find(
+            (p) => p.order_item_id === item.order_item_id && p.item_status !== 'served'
+          );
+          if (item.item_status === 'served' && wasNotServed) {
+            await this.orderService.notifyItemServed(deviceId, item.menu_name);
+          }
+        }
+      },
       (updatedOrder) => { this.activeOrder = updatedOrder; }
     );
   }
 
-  /**
-   * Envoie en cuisine les articles actuellement dans le panier local.
-   * Récupère ou crée la commande ouverte de la table (peu importe quel
-   * appareil a commandé avant) et y ajoute ces articles.
-   */
   async sendOrder() {
     const table = this.tableService.current;
     if (!table) {
