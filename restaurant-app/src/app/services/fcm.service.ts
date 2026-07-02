@@ -54,8 +54,8 @@ export class FcmService {
     try {
       await LocalNotifications.createChannel({
         id: FcmService.CHANNEL_ID,
-        name: 'Smart Café',
-        description: 'Notifications Smart Café',
+        name: 'Lux Café',
+        description: 'Notifications Lux Café',
         importance: 5, // IMPORTANCE_HIGH
         visibility: 1,
         vibration: true,
@@ -98,7 +98,7 @@ export class FcmService {
   }
 
   private async showLocalNotification(notification: PushNotificationSchema) {
-    const title = notification.title ?? notification.data?.['title'] ?? 'Smart Café';
+    const title = notification.title ?? notification.data?.['title'] ?? 'Lux Café';
     const body = notification.body ?? notification.data?.['body'] ?? 'Vous avez une nouvelle notification';
 
     try {
