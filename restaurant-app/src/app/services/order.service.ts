@@ -63,22 +63,13 @@ export class OrderService {
       item_status: 'confirmed',
     }));
 
-    const { error: itemsError } = await this.supabase.client.from('order_items').insert(rows);
-    if (itemsError) {
-      console.error('Erreur ajout articles', itemsError);
+    const { error } = await this.supabase.client.from('order_items').insert(rows);
+    if (error) {
+      console.error('Erreur ajout articles', error);
       return false;
     }
 
-    const order = await this.getOrder(orderId);
-    if (!order) return false;
-
-    const addedTotal = lines.reduce((sum, l) => sum + l.unit_price * l.quantity, 0);
-    const { error: updateError } = await this.supabase.client
-      .from('orders')
-      .update({ total_amount: order.total_amount + addedTotal })
-      .eq('order_id', orderId);
-
-    return !updateError;
+    return true;
   }
 
   async getOrder(orderId: string): Promise<Order | null> {
