@@ -12,6 +12,12 @@
 
     <div class="category-rail" *ngIf="categories.length">
       <button
+        *ngIf="isLoggedIn && favoriteItems.length"
+        class="rail-chip"
+        (click)="scrollTo(0)">
+        ♥ Favoris
+      </button>
+      <button
         *ngFor="let cat of categories"
         class="rail-chip"
         (click)="scrollTo(cat.category_id)">
@@ -19,10 +25,33 @@
       </button>
     </div>
 
+    <!-- Section Favoris -->
+    <div id="cat-0" class="category-block" *ngIf="isLoggedIn && favoriteItems.length">
+      <div class="category-heading">
+        <span class="lux-divider-short"></span>
+        <h2>Vos favoris</h2>
+      </div>
+
+      <div class="dish" *ngFor="let item of favoriteItems">
+        <div class="dish-info">
+          <h3 class="dish-name">{{ item.menu_name }}</h3>
+          <p class="dish-desc">{{ item.menu_description }}</p>
+          <div class="dish-footer">
+            <span class="dish-price">{{ item.price | number:'1.2-2' }} €</span>
+            <div class="dish-actions">
+              <button class="fav-btn active" (click)="toggleFavorite($event, item)">♥</button>
+              <button class="add-btn" (click)="addToCart(item)">Ajouter</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <p class="empty-menu" *ngIf="!categories.length">
       Le menu n'est pas encore disponible. Revenez bientôt.
     </p>
 
+    <!-- Menu complet par catégorie -->
     <div *ngFor="let cat of categories" [id]="'cat-' + cat.category_id" class="category-block">
       <div class="category-heading">
         <span class="lux-divider-short"></span>
@@ -35,7 +64,16 @@
           <p class="dish-desc">{{ item.menu_description }}</p>
           <div class="dish-footer">
             <span class="dish-price">{{ item.price | number:'1.2-2' }} €</span>
-            <button class="add-btn" (click)="addToCart(item)">Ajouter</button>
+            <div class="dish-actions">
+              <button
+                *ngIf="isLoggedIn"
+                class="fav-btn"
+                [class.active]="isFavorite(item.menu_id)"
+                (click)="toggleFavorite($event, item)">
+                {{ isFavorite(item.menu_id) ? '♥' : '♡' }}
+              </button>
+              <button class="add-btn" (click)="addToCart(item)">Ajouter</button>
+            </div>
           </div>
         </div>
       </div>

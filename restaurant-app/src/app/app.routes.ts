@@ -29,5 +29,10 @@ export const routes: Routes = [
       { path: '', redirectTo: 'menu', pathMatch: 'full' },
     ],
   },
+  {
+    path: 'order-history',
+    loadComponent: () =>
+      import('./pages/order-history/order-history.page').then((m) => m.OrderHistoryPage),
+  },
   { path: '**', redirectTo: 'landing' },
 ];

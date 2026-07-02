@@ -93,3 +93,13 @@
   --border-width: 1px;
   --border-radius: 2px;
 }
+
+.cta-secondary {
+  --background: transparent;
+  --color: var(--lux-gold);
+  --border-color: var(--lux-gold);
+  --border-style: solid;
+  --border-width: 1px;
+  --border-radius: 2px;
+  font-weight: 600;
+}

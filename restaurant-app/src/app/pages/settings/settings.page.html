@@ -53,6 +53,14 @@
       </div>
     </div>
 
+    
+    <div class="section">
+      <h2 class="section-title">Commandes</h2>
+      <ion-button expand="block" class="cta-secondary" (click)="goToHistory()">
+        Voir l'historique
+      </ion-button>
+    </div>
+
     <p class="success-msg" *ngIf="message">{{ message }}</p>
     <p class="error" *ngIf="error">{{ error }}</p>
 

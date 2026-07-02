@@ -147,4 +147,8 @@ export class SettingsPage implements OnInit {
   goToLogin() {
     this.router.navigateByUrl('/login');
   }
+
+  goToHistory() {
+    this.router.navigateByUrl('/order-history');
+  }
 }

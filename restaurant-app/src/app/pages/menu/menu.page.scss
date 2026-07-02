@@ -154,3 +154,22 @@
   font-size: 0.9rem;
   font-family: var(--lux-font-body);
 }
+
+.dish-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fav-btn {
+  background: none;
+  border: none;
+  color: var(--lux-stone);
+  font-size: 1.1rem;
+  padding: 0 4px;
+  transition: color 0.2s;
+}
+
+.fav-btn.active {
+  color: var(--lux-bordeaux);
+}

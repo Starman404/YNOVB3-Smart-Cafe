@@ -1,0 +1,39 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="lux-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/settings" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Historique</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="lux-history">
+
+  <p class="loading-msg" *ngIf="loading">Chargement…</p>
+
+  <p class="empty-msg" *ngIf="!loading && orders.length === 0">
+    Aucune commande passée pour l'instant.
+  </p>
+
+  <div class="order-card" *ngFor="let order of orders" (click)="toggleOrder(order)">
+
+    <div class="order-summary">
+      <div class="order-info">
+        <span class="order-date">{{ formatDate(order.created_at) }}</span>
+        <span class="order-amount lux-mono">{{ order.total_amount | number:'1.2-2' }} €</span>
+      </div>
+      <span class="chevron" [class.open]="order.expanded">›</span>
+    </div>
+
+    <div class="order-detail" *ngIf="order.expanded">
+      <p class="loading-items" *ngIf="order.loadingItems">Chargement…</p>
+
+      <div class="detail-row" *ngFor="let item of order.items">
+        <span>{{ item.quantity }} × {{ item.menu_name }}</span>
+        <span class="lux-mono">{{ (item.unit_price * item.quantity) | number:'1.2-2' }} €</span>
+      </div>
+    </div>
+
+  </div>
+
+</ion-content>
