@@ -20,7 +20,7 @@ export default function DashboardPage() {
       <div>
         <h2 className="text-2xl font-bold tracking-tight">Dashboard</h2>
         <p className="text-muted-foreground text-sm">
-          Vue d'ensemble du Smart Café
+          Vue d'ensemble du Lux Café
         </p>
       </div>
 

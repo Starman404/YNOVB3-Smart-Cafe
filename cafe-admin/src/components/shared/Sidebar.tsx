@@ -50,7 +50,7 @@ export function Sidebar() {
     >
       {/* Logo */}
       <div className="px-2 mb-6">
-        <h1 className="text-xl font-bold tracking-tight">Smart Café</h1>
+        <h1 className="text-xl font-bold tracking-tight">Lux Café</h1>
         <p className="text-xs text-muted-foreground">Espace gestion</p>
       </div>
 

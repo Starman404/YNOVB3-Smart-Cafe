@@ -15,10 +15,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Smart Café',
+    default: 'Lux Café',
     template: '%s',
   },
-  description: 'Application de gestion du Smart Café',
+  description: 'Application de gestion du Lux Café',
 }
 
 export default function RootLayout({

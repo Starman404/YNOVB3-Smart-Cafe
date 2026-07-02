@@ -23,10 +23,10 @@ public class MainActivity extends BridgeActivity {
 
     NotificationChannel channel = new NotificationChannel(
         CHANNEL_ID,
-        "Smart Café",
+        "Lux Café",
         NotificationManager.IMPORTANCE_HIGH
     );
-    channel.setDescription("Notifications Smart Café");
+    channel.setDescription("Notifications Lux Café");
     channel.enableVibration(true);
     channel.enableLights(true);
     channel.setShowBadge(true);

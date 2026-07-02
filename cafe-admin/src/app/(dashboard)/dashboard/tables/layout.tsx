@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Tables | Smart Café',
+  title: 'Tables | Lux Café',
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
