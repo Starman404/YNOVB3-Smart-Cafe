@@ -56,7 +56,13 @@ export function RevenueChart() {
                 tickFormatter={(v) => `${v}€`}
               />
               <Tooltip
-                formatter={(value: number) => [`${value.toFixed(2)} €`, 'Revenus']}
+                formatter={(value) => {
+                  if (typeof value !== "number") {
+                    return ["0.00 €", "Revenus"];
+                  }
+
+                  return [`${value.toFixed(2)} €`, "Revenus"];
+                }}
                 labelStyle={{ fontWeight: 600 }}
                 contentStyle={{
                   borderRadius: '8px',

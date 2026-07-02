@@ -45,7 +45,7 @@ export function TopItemsChart() {
                 width={100}
               />
               <Tooltip
-                formatter={(value: number) => [value, 'Quantité']}
+                formatter={(value) => [Number(value ?? 0), "Quantité"]}
                 contentStyle={{
                   borderRadius: '8px',
                   border: '1px solid hsl(var(--border))',
