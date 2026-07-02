@@ -119,7 +119,7 @@ function buildVisibleNotificationPayload(title, body, type = 'notification') {
       notification: {
         title,
         body,
-        channelId: 'smart_cafe_default',
+        channelId: 'smart_cafe_default_v2',
         sound: 'default',
         defaultSound: true,
         clickAction: 'OPEN_ACTIVITY_1',

@@ -20,6 +20,10 @@
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />
 
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="smart_cafe_default" />
+
         <activity
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"
             android:name=".MainActivity"
